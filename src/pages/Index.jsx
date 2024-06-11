@@ -9,6 +9,7 @@ const Index = () => {
   ]);
 
   const [newEvent, setNewEvent] = useState({ title: "", details: "" });
+  const [editingEvent, setEditingEvent] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -17,9 +18,22 @@ const Index = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const newEventData = { ...newEvent, id: events.length + 1 };
-    setEvents([...events, newEventData]);
+    if (editingEvent) {
+      const updatedEvents = events.map((event) =>
+        event.id === editingEvent.id ? { ...editingEvent, ...newEvent } : event
+      );
+      setEvents(updatedEvents);
+      setEditingEvent(null);
+    } else {
+      const newEventData = { ...newEvent, id: events.length + 1 };
+      setEvents([...events, newEventData]);
+    }
     setNewEvent({ title: "", details: "" });
+  };
+
+  const handleEditEvent = (event) => {
+    setEditingEvent(event);
+    setNewEvent({ title: event.title, details: event.details });
   };
 
   return (
@@ -38,7 +52,7 @@ const Index = () => {
         <VStack spacing={4} align="stretch">
           {/* Event Form */}
           <Box p={5} shadow="md" borderWidth="1px">
-            <Heading fontSize="xl">Create New Event</Heading>
+            <Heading fontSize="xl">{editingEvent ? "Edit Event" : "Create New Event"}</Heading>
             <form onSubmit={handleFormSubmit}>
               <FormControl id="title" isRequired>
                 <FormLabel>Event Title</FormLabel>
@@ -58,7 +72,7 @@ const Index = () => {
                 />
               </FormControl>
               <Button mt={4} colorScheme="teal" type="submit">
-                Create Event
+                {editingEvent ? "Update Event" : "Create Event"}
               </Button>
             </form>
           </Box>
@@ -69,7 +83,7 @@ const Index = () => {
               <Heading fontSize="xl">{event.title}</Heading>
               <Text mt={4}>{event.details}</Text>
               <Flex mt={4}>
-                <Button size="sm" colorScheme="blue" leftIcon={<FaEdit />}>
+                <Button size="sm" colorScheme="blue" leftIcon={<FaEdit />} onClick={() => handleEditEvent(event)}>
                   Edit
                 </Button>
                 <Spacer />
