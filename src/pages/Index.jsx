@@ -1,19 +1,56 @@
-// Update this page (the content is just a fallback if you fail and example)
-// Use chakra-ui
-import { Container, Text, VStack } from "@chakra-ui/react";
-
-// Example of using react-icons
-// import { FaRocket } from "react-icons/fa";
-// <IconButton aria-label="Add" icon={<FaRocket />} size="lg" />; // IconButton would also have to be imported from chakra
+import { Box, Container, Flex, Heading, Text, VStack, Button, Spacer } from "@chakra-ui/react";
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 const Index = () => {
   return (
-    <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-      <VStack spacing={4}>
-        <Text fontSize="2xl">Your Blank Canvas</Text>
-        <Text>Chat with the agent to start making edits.</Text>
-      </VStack>
-    </Container>
+    <Box>
+      {/* Navigation Bar */}
+      <Flex as="nav" bg="brand.700" color="white" padding="1.5rem">
+        <Heading size="lg">Events Management</Heading>
+        <Spacer />
+        <Button colorScheme="teal" variant="outline" leftIcon={<FaPlus />}>
+          Add Event
+        </Button>
+      </Flex>
+
+      {/* Main Content Area */}
+      <Container maxW="container.md" py={10}>
+        <VStack spacing={4} align="stretch">
+          <Box p={5} shadow="md" borderWidth="1px">
+            <Heading fontSize="xl">Event 1</Heading>
+            <Text mt={4}>Details about Event 1</Text>
+            <Flex mt={4}>
+              <Button size="sm" colorScheme="blue" leftIcon={<FaEdit />}>
+                Edit
+              </Button>
+              <Spacer />
+              <Button size="sm" colorScheme="red" leftIcon={<FaTrash />}>
+                Delete
+              </Button>
+            </Flex>
+          </Box>
+          <Box p={5} shadow="md" borderWidth="1px">
+            <Heading fontSize="xl">Event 2</Heading>
+            <Text mt={4}>Details about Event 2</Text>
+            <Flex mt={4}>
+              <Button size="sm" colorScheme="blue" leftIcon={<FaEdit />}>
+                Edit
+              </Button>
+              <Spacer />
+              <Button size="sm" colorScheme="red" leftIcon={<FaTrash />}>
+                Delete
+              </Button>
+            </Flex>
+          </Box>
+          {/* Add more event boxes as needed */}
+        </VStack>
+      </Container>
+
+      {/* Footer */}
+      <Flex as="footer" bg="brand.700" color="white" padding="1.5rem" justifyContent="center">
+        <Text>© 2023 Events Management. All rights reserved.</Text>
+      </Flex>
+    </Box>
   );
 };
 
