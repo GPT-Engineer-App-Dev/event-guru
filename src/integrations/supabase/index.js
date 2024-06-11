@@ -9,6 +9,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 export const SupabaseContext = createContext();
 
 export const SupabaseProvider = ({ children }) => {
+  // This component provides the Supabase client to its children
   return (
     <SupabaseContext.Provider value={supabase}>
       {children}
