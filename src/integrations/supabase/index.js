@@ -48,7 +48,7 @@ Comments // table: comments
     event_id: number // foreign key to Events
 */
 
-// Hooks for Jobs table
+/* Hooks for Jobs table */
 export const useJobs = () => useQuery({
     queryKey: ['jobs'],
     queryFn: () => fromSupabase(supabase.from('jobs').select('*')),
