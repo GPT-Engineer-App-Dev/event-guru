@@ -36,6 +36,11 @@ const Index = () => {
     setNewEvent({ title: event.title, details: event.details });
   };
 
+  const handleDeleteEvent = (eventId) => {
+    const updatedEvents = events.filter((event) => event.id !== eventId);
+    setEvents(updatedEvents);
+  };
+
   return (
     <Box>
       {/* Navigation Bar */}
@@ -87,7 +92,7 @@ const Index = () => {
                   Edit
                 </Button>
                 <Spacer />
-                <Button size="sm" colorScheme="red" leftIcon={<FaTrash />}>
+                <Button size="sm" colorScheme="red" leftIcon={<FaTrash />} onClick={() => handleDeleteEvent(event.id)}>
                   Delete
                 </Button>
               </Flex>
