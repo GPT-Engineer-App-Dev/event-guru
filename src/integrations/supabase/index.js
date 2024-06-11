@@ -35,6 +35,7 @@ Events // table: events
     is_starred: boolean
     private: boolean
     cancelled: boolean
+    description: string // new column added
 
 Comments // table: comments
     id: number

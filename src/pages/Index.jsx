@@ -2,10 +2,15 @@ import { useState } from "react";
 import { Box, Container, Flex, Heading, Text, VStack, Button, Spacer, Input, Textarea, FormControl, FormLabel } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { useEvents, useAddEvent, useUpdateEvent, useDeleteEvent } from "../integrations/supabase/index.js";
 
-const Index = ({ events, setEvents }) => {
+const Index = () => {
+  const { data: events, isLoading, error } = useEvents();
+  const addEvent = useAddEvent();
+  const updateEvent = useUpdateEvent();
+  const deleteEvent = useDeleteEvent();
 
-  const [newEvent, setNewEvent] = useState({ title: "", details: "" });
+  const [newEvent, setNewEvent] = useState({ name: "", description: "" });
   const [editingEvent, setEditingEvent] = useState(null);
 
   const handleInputChange = (e) => {
@@ -16,27 +21,30 @@ const Index = ({ events, setEvents }) => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (editingEvent) {
-      const updatedEvents = events.map((event) =>
-        event.id === editingEvent.id ? { ...editingEvent, ...newEvent } : event
-      );
-      setEvents(updatedEvents);
+      updateEvent.mutate({ ...editingEvent, ...newEvent });
       setEditingEvent(null);
     } else {
-      const newEventData = { ...newEvent, id: events.length + 1 };
-      setEvents([...events, newEventData]);
+      addEvent.mutate(newEvent);
     }
-    setNewEvent({ title: "", details: "" });
+    setNewEvent({ name: "", description: "" });
   };
 
   const handleEditEvent = (event) => {
     setEditingEvent(event);
-    setNewEvent({ title: event.title, details: event.details });
+    setNewEvent({ name: event.name, description: event.description });
   };
 
   const handleDeleteEvent = (eventId) => {
-    const updatedEvents = events.filter((event) => event.id !== eventId);
-    setEvents(updatedEvents);
+    deleteEvent.mutate(eventId);
   };
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error loading events</Text>;
+  }
 
   return (
     <Box>
@@ -56,20 +64,20 @@ const Index = ({ events, setEvents }) => {
           <Box p={5} shadow="md" borderWidth="1px">
             <Heading fontSize="xl">{editingEvent ? "Edit Event" : "Create New Event"}</Heading>
             <form onSubmit={handleFormSubmit}>
-              <FormControl id="title" isRequired>
-                <FormLabel>Event Title</FormLabel>
+              <FormControl id="name" isRequired>
+                <FormLabel>Event Name</FormLabel>
                 <Input
                   type="text"
-                  name="title"
-                  value={newEvent.title}
+                  name="name"
+                  value={newEvent.name}
                   onChange={handleInputChange}
                 />
               </FormControl>
-              <FormControl id="details" isRequired mt={4}>
-                <FormLabel>Event Details</FormLabel>
+              <FormControl id="description" isRequired mt={4}>
+                <FormLabel>Event Description</FormLabel>
                 <Textarea
-                  name="details"
-                  value={newEvent.details}
+                  name="description"
+                  value={newEvent.description}
                   onChange={handleInputChange}
                 />
               </FormControl>
@@ -83,9 +91,9 @@ const Index = ({ events, setEvents }) => {
           {events.map((event) => (
             <Box key={event.id} p={5} shadow="md" borderWidth="1px">
               <Heading fontSize="xl">
-                <Link to={`/event/${event.id}`}>{event.title}</Link>
+                <Link to={`/event/${event.id}`}>{event.name}</Link>
               </Heading>
-              <Text mt={4}>{event.details}</Text>
+              <Text mt={4}>{event.description}</Text>
               <Flex mt={4}>
                 <Button size="sm" colorScheme="blue" leftIcon={<FaEdit />} onClick={() => handleEditEvent(event)}>
                   Edit
