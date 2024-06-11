@@ -1,3 +1,24 @@
+import { createClient } from '@supabase/supabase-js';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_PROJECT_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+export const SupabaseProvider = ({ children }) => {
+  return (
+    <SupabaseContext.Provider value={supabase}>
+      {children}
+    </SupabaseContext.Provider>
+  );
+};
+
+const fromSupabase = async (query) => {
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return data;
+};
+
 /* supabase integration types
 
 Jobs // table: jobs
