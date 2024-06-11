@@ -51,7 +51,7 @@ Comments // table: comments
 // Hooks for Jobs table
 export const useJobs = () => useQuery({
     queryKey: ['jobs'],
-    queryFn: () => fromSupabase(supabase.from('jobs').select('*')),
+    queryFn: () => fromSupabase(supabase.from('jobs').select('*').eq('status', 'active')),
 });
 
 export const useJob = (id) => useQuery({
