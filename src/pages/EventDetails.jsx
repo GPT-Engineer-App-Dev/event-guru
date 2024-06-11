@@ -1,6 +1,5 @@
 import { Box, Heading, Text, Button, Flex } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
-
 import { useEvent } from "../integrations/supabase/index.js";
 
 const EventDetails = () => {
