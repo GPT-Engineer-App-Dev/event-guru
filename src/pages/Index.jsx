@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { Box, Container, Flex, Heading, Text, VStack, Button, Spacer, Input, Textarea, FormControl, FormLabel } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
-const Index = () => {
-  const [events, setEvents] = useState([
-    { id: 1, title: "Event 1", details: "Details about Event 1" },
-    { id: 2, title: "Event 2", details: "Details about Event 2" },
-  ]);
+const Index = ({ events, setEvents }) => {
 
   const [newEvent, setNewEvent] = useState({ title: "", details: "" });
   const [editingEvent, setEditingEvent] = useState(null);
@@ -85,7 +82,9 @@ const Index = () => {
           {/* Event List */}
           {events.map((event) => (
             <Box key={event.id} p={5} shadow="md" borderWidth="1px">
-              <Heading fontSize="xl">{event.title}</Heading>
+              <Heading fontSize="xl">
+                <Link to={`/event/${event.id}`}>{event.title}</Link>
+              </Heading>
               <Text mt={4}>{event.details}</Text>
               <Flex mt={4}>
                 <Button size="sm" colorScheme="blue" leftIcon={<FaEdit />} onClick={() => handleEditEvent(event)}>
