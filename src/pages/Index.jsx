@@ -2,8 +2,13 @@ import { useState } from "react";
 import { Box, Container, Flex, Heading, Text, VStack, Button, Spacer, Input, Textarea, FormControl, FormLabel } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { useEvents, useAddEvent, useUpdateEvent, useDeleteEvent } from "../integrations/supabase/index.js";
 
-const Index = ({ events, setEvents }) => {
+const Index = () => {
+  const { data: events, isLoading, isError } = useEvents();
+  const addEventMutation = useAddEvent();
+  const updateEventMutation = useUpdateEvent();
+  const deleteEventMutation = useDeleteEvent();
 
   const [newEvent, setNewEvent] = useState({ title: "", details: "" });
   const [editingEvent, setEditingEvent] = useState(null);
@@ -16,27 +21,30 @@ const Index = ({ events, setEvents }) => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (editingEvent) {
-      const updatedEvents = events.map((event) =>
-        event.id === editingEvent.id ? { ...editingEvent, ...newEvent } : event
-      );
-      setEvents(updatedEvents);
+      updateEventMutation.mutate({ ...editingEvent, ...newEvent });
       setEditingEvent(null);
     } else {
-      const newEventData = { ...newEvent, id: events.length + 1 };
-      setEvents([...events, newEventData]);
+      addEventMutation.mutate(newEvent);
     }
     setNewEvent({ title: "", details: "" });
   };
 
   const handleEditEvent = (event) => {
     setEditingEvent(event);
-    setNewEvent({ title: event.title, details: event.details });
+    setNewEvent({ title: event.name, details: event.details });
   };
 
   const handleDeleteEvent = (eventId) => {
-    const updatedEvents = events.filter((event) => event.id !== eventId);
-    setEvents(updatedEvents);
+    deleteEventMutation.mutate(eventId);
   };
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (isError) {
+    return <Text>Error loading events</Text>;
+  }
 
   return (
     <Box>
@@ -83,7 +91,7 @@ const Index = ({ events, setEvents }) => {
           {events.map((event) => (
             <Box key={event.id} p={5} shadow="md" borderWidth="1px">
               <Heading fontSize="xl">
-                <Link to={`/event/${event.id}`}>{event.title}</Link>
+                <Link to={`/event/${event.id}`}>{event.name}</Link>
               </Heading>
               <Text mt={4}>{event.details}</Text>
               <Flex mt={4}>

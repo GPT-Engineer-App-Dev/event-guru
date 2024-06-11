@@ -1,18 +1,24 @@
-import { Box, Heading, Text, Button, Flex, Spacer } from "@chakra-ui/react";
+import { Box, Heading, Text, Button, Flex } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
 
-const EventDetails = ({ events }) => {
+import { useEvent } from "../integrations/supabase/index.js";
+
+const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const event = events.find((event) => event.id === parseInt(id));
+  const { data: event, isLoading, isError } = useEvent(id);
 
-  if (!event) {
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (isError || !event) {
     return <Text>Event not found</Text>;
   }
 
   return (
     <Box p={5}>
-      <Heading>{event.title}</Heading>
+      <Heading>{event.name}</Heading>
       <Text mt={4}>{event.details}</Text>
       <Flex mt={4}>
         <Button colorScheme="teal" onClick={() => navigate("/")}>
